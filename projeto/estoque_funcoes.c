@@ -133,9 +133,9 @@ void gerar_relatorio(char *relatorio)
     relatorio[0] = '\0';
     char temp[200];
     sprintf(temp, "--- Relatório Completo do Estoque ---\nTotal de produtos: %d\n\n", total_produtos);
-    concatenar_string(relatorio, temp);
-    concatenar_string(relatorio, "Código    Nome                Quantidade Preço     Validade\n");
-    concatenar_string(relatorio, "----------------------------------------------------------\n");
+    juntar_string(relatorio, temp);
+    juntar_string(relatorio, "Código    Nome                Quantidade Preço     Validade\n");
+    juntar_string(relatorio, "----------------------------------------------------------\n");
 
     float valor_total = 0;
     for (int i = 0; i < total_produtos; i++) {
@@ -145,11 +145,11 @@ void gerar_relatorio(char *relatorio)
                 estoque[i].quantidade,
                 estoque[i].preco,
                 estoque[i].data_validade);
-        concatenar_string(relatorio, temp);
+        juntar_string(relatorio, temp);
         valor_total += estoque[i].quantidade * estoque[i].preco;
     }
     sprintf(temp, "\nValor total em estoque: R$%.2f\n", valor_total);
-    concatenar_string(relatorio, temp);
+    juntar_string(relatorio, temp);
 }
 
 // busca produto por código ou nome
