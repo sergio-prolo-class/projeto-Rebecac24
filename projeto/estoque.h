@@ -1,5 +1,7 @@
 #ifndef ESTOQUE_H
 #define ESTOQUE_H
+#include "util.h"
+#include "estoque.h"
 
 #define MAX_PRODUTOS 500
 #define DATA_TAMANHO 11
