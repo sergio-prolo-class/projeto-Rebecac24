@@ -9,7 +9,7 @@ int main()
 
     int opcao;
     do {
-        printf("\nSistema de Controle de Estoque:\n");
+        printf("\nSistema de Controle de Estoque de Mercearia:\n");
         printf("1. Cadastrar novo produto\n");
         printf("2. Verificar produtos em estoque\n");
         printf("3. Verificar validade dos produtos\n");
@@ -128,7 +128,7 @@ int main()
                 int sub_opcao, codigo, quantidade;
                 float novo_preco;
 
-                printf("\n--- Atualização de Estoque ---\n");
+                printf("\nAtualização de Estoque\n");
                 printf("1. Adicionar quantidade\n");
                 printf("2. Remover quantidade\n");
                 printf("3. Alterar preço\n");
@@ -194,7 +194,7 @@ int main()
                 if (resultado == -1) {
                     printf("Erro ao salvar o estoque!\n");
                 } else {
-                    printf("Estoque salvo com sucesso no arquivo 'estoque.txt'!\n");
+                    printf("Estoque salvo no arquivo 'estoque.txt'\n");
                 }
                 break;
             }
@@ -212,7 +212,7 @@ int main()
                 char *resultados[MAX_PRODUTOS];
                 int total;
 
-                printf("\n--- Busca de Produtos ---\n");
+                printf("\nBusca de Produtos\n");
                 printf("1. Por código\n");
                 printf("2. Por nome\n");
                 printf("Escolha uma opção: ");
@@ -234,7 +234,7 @@ int main()
                 }
 
                 if (scanf(" %49[^\n]", termo) != 1) {
-                    printf("Termo inválido!\n");
+                    printf("termo inválido!\n");
                     limpar_buffer();
                     break;
                 }
