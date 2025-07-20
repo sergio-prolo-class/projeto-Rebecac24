@@ -6,7 +6,6 @@
 int main()
 {
     carregar_estoque();
-
     int opcao;
     do {
         printf("\nSistema de Controle de Estoque de Mercearia:\n");
@@ -86,13 +85,13 @@ int main()
                     case -3: printf("Erro: Quantidade inválida!\n"); break;
                     case -4: printf("Erro: Preço inválido!\n"); break;
                     case 0: printf("Produto adicionado com sucesso!\n"); break;
-                    default: printf("Erro desconhecido!\n");
+                    default: printf("Erro\n");
                 }
                 break;
             }
 
             case 2: {
-                printf("\n--- Produtos em Estoque ---\n");
+                printf("\nProdutos em Estoque:\n");
                 if (total_produtos == 0) {
                     printf("Nenhum produto cadastrado.\n");
                 } else {
@@ -128,7 +127,7 @@ int main()
                 int sub_opcao, codigo, quantidade;
                 float novo_preco;
 
-                printf("\nAtualização de Estoque\n");
+                printf("\nAtualização de Estoque:\n");
                 printf("1. Adicionar quantidade\n");
                 printf("2. Remover quantidade\n");
                 printf("3. Alterar preço\n");
@@ -227,8 +226,6 @@ int main()
                 if (sub_opcao == 1) {
                     printf("Digite o código: ");
                 } else if (sub_opcao == 2) {
-                    printf("Digite o nome ou parte do nome: ");
-                } else {
                     printf("Opção inválida!\n");
                     break;
                 }

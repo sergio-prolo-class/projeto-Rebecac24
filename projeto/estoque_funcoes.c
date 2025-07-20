@@ -12,12 +12,22 @@ int validar_data(const char *data)
 {
     if (!data || data[2] != '/' || data[5] != '/' || data[10] != '\0')
         return 0;
-    for (int i = 0; i < 10; i++) {
-        if ((i == 2 || i == 5))
-            continue;
-        if (data[i] < '0' || data[i] > '9')
-            return 0;
-    }
+
+    int dia = (data[0] - '0') * 10 + (data[1] - '0');
+    int mes = (data[3] - '0') * 10 + (data[4] - '0');
+    int ano = (data[6] - '0') * 1000 + (data[7] - '0') * 100 + (data[8] - '0') * 10 + (data[9] - '0');
+
+    if (dia < 1 || mes < 1 || mes > 12 || ano < 1900)
+        return 0;
+
+    int dias_no_mes[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    // Ano bissexto
+    if ((ano % 4 == 0 && ano % 100 != 0) || (ano % 400 == 0))
+        dias_no_mes[1] = 29;
+
+    if (dia > dias_no_mes[mes - 1])
+        return 0;
+
     return 1;
 }
 
@@ -48,31 +58,31 @@ int adicionar_produto(int codigo, const char *nome, int quantidade, float preco,
 // Atualiza quantidade ou o preço do produto
 int atualizar_estoque(int opcao, int codigo, int quantidade, float novo_preco)
 {
-    int idx = -1;
+    int indice_produto = -1;
     for (int i = 0; i < total_produtos; i++)
         if (estoque[i].codigo == codigo) {
-            idx = i;
+            indice_produto = i;
             break;
         }
-    if (idx == -1)
+    if (indice_produto == -1)
         return -1;
 
     if (opcao == 1) {  // Entrada
         if (quantidade <= 0)
             return -2;
-        estoque[idx].quantidade += quantidade;
-        return estoque[idx].quantidade;
+        estoque[indice_produto].quantidade += quantidade;
+        return estoque[indice_produto].quantidade;
     } else if (opcao == 2) {  // Saída
         if (quantidade <= 0)
             return -2;
-        if (quantidade > estoque[idx].quantidade)
+        if (quantidade > estoque[indice_produto].quantidade)
             return -3;
-        estoque[idx].quantidade -= quantidade;
-        return estoque[idx].quantidade;
+        estoque[indice_produto].quantidade -= quantidade;
+        return estoque[indice_produto].quantidade;
     } else if (opcao == 3) {  // Atualiza preço
         if (novo_preco <= 0)
             return -4;
-        estoque[idx].preco = novo_preco;
+        estoque[indice_produto].preco = novo_preco;
         return 0;
     }
     return -5;

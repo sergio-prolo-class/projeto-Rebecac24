@@ -1,7 +1,7 @@
 #ifndef ESTOQUE_H
 #define ESTOQUE_H
 
-#define MAX_PRODUTOS 100
+#define MAX_PRODUTOS 500
 #define DATA_TAMANHO 11
 
 typedef struct {
