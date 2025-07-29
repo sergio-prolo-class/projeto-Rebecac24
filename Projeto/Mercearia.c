@@ -1,32 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
-#define MAX 300      // quantidade maxima que o estoque suporta
-#define TAM_DATA 11  // tamanho da data dd/mm/aaaa +\0
-#define TAM_NOME 51  // quantidade maxima de caracteres que o produto pode ter é 50 +\0
-
-typedef struct {
-    char nome[TAM_NOME];
-    int quantidade;
-    float preco;
-    char data_validade[TAM_DATA];  // dd/mm/aaaa
-} Produto;
-
-// Funções:
-int adicionar_produto(Produto estoque[], int *num_produtos, Produto novo_produto);  // adiciona um novo produto no arranjo de estoque
-
-void verificar_validade(const Produto estoque[], int num_produtos, const char *data_hoje, char **vencidos_nomes, int *num_vencidos);  // verifica o estoque e imprime no terminal os produtos vencidos.
-
-int atualizar_estoque(Produto *produto_para_atualizar, int atualizacao, float valor);  // atualiza o preço ou quantidade de um produto do estoque
-
-int buscar_produto_por_nome(const Produto estoque[], int num_produtos, const char *nome_busca);  // procura um produto no estoque pelo nome.
-
-void gerar_relatorio(const Produto estoque[], int num_produtos, char *relatorio_buffer, int buffer_tamanho);  // gera um relatório de todos os produtos
-
-int extrair_produtos(const char *data_str, int *dia, int *mes, int *ano);
-
-int aplicar_desconto(Produto *produto_para_atulizar, float porcentagem_desconto);
+#include "estoque.h"
 
 // Menu do usuario
 int main()
@@ -43,7 +18,7 @@ int main()
         printf("4.Atualizar estoque\n");
         printf("5.Gerar relatorio\n");
         printf("6.Buscar produto pelo nome\n");
-        printf("7.Aplicar desconto em % em produtos\n");
+        printf("7.Aplicar desconto em porcentagem em produto \n");
         printf("0.Sair do menu\n");
         scanf("%d", &opcao);
 
@@ -83,7 +58,7 @@ int main()
                 break;
             }
             case 2: {  // Listar os produtos
-                printf("\n--- Lista de Produtos em Estoque ---\n");
+                printf("\nLista dos Produtos em Estoque\n");
                 if (num_produtos == 0) {
                     printf("Nenhum produto cadastrado.\n");
                 } else {
@@ -106,7 +81,7 @@ int main()
                 printf("\nVerificando Validade dos Produtos baseado na data: %s \n", data_atual);
 
                 int dia_hoje, mes_hoje, ano_hoje;
-                if (!extrair_data_componentes(data_atual, &dia_hoje, &mes_hoje, &ano_hoje)) {
+                if (extrair_data_componentes(data_atual, &dia_hoje, &mes_hoje, &ano_hoje) == 0) {  // Código a ser executado se a extração da data falhar
                     printf("Erro: Formato de data de hoje invalido. Use DD/MM/AAAA.\n");
                     break;  // Sai do case
                 }
@@ -117,7 +92,7 @@ int main()
                     int algum_vencido = 0;
                     for (int i = 0; i < num_produtos; i++) {
                         int dia_prod, mes_prod, ano_prod;
-                        if (data_componentes(estoque[i].data_validade, &dia_prod, &mes_prod, &ano_prod)) {
+                        if (extrair_data_componentes(estoque[i].data_validade, &dia_prod, &mes_prod, &ano_prod)) {
                             printf("ALERTA: Produto '%s' tem formato de validade invalido: %s. Ignorando validacao.\n",
                                    estoque[i].nome, estoque[i].data_validade);
                             continue;
@@ -257,104 +232,3 @@ int main()
 
     return 0;
 }
-
-// Função de componentes da data
-int data_componentes(const char *data_str, int *dia, int *mes, int *ano)
-{
-    int d = 0, m = 0, y = 0;
-    int parte_atual = 0;  // 0 = dia, 1 = mês, 2 = ano
-    int i = 0;            // Índice para percorrer a string
-
-    *dia = 0;
-    *mes = 0;
-    *ano = 0;  // Zera os valores
-
-    while (data_str[i] != '\0') {
-        if (data_str[i] >= '0' && data_str[i] <= '9') {
-            if (parte_atual == 0) {
-                d = d * 10 + (data_str[i] - '0');
-            } else if (parte_atual == 1) {
-                m = m * 10 + (data_str[i] - '0');
-            } else if (parte_atual == 2) {
-                a = a * 10 + (data_str[i] - '0');
-            }
-        } else if (data_str[i] == '/') {
-            parte_atual++;
-            if (parte_atual > 2)
-                return 0;  // Formato inválido
-        } else {
-            return 0;  // Caractere inválido
-        }
-        i++;
-    }
-
-    if (parte_atual != 2) {
-        return 0;
-    }  // Formato incompleto
-
-    *dia = d;
-    *mes = m;
-    *ano = a;
-    return 1;  // Sucesso
-}
-
-int adicionar_produto(Produto estoque[], int *num_produtos, Produto novo_produto)
-{
-    if (*num_produtos >= MAX_PRODUTOS) {
-        return 0;  // Falha: estoque está cheio
-    }
-    if (novo_produto.quantidade < 0 || novo_produto.preco <= 0.0) {
-        return 0;  // Falha: dados inválidos
-    }
-    estoque[*num_produtos] = novo_produto;
-    (*num_produtos)++;
-    return 1;  // Sucesso
-}
-
-void verificar_validade(const Produto estoque[], int num_produtos, const char* data_hoje, char** vencidos_nomes, int* num_vencidos) {}
-
-int atualizar_estoque(Produto *produto_alvo, int operacao, float valor) {
-    switch (operacao) {
-        case 1: // Adicionar quantidade
-            if (valor > 0) {
-                produto_alvo->quantidade += (int)valor;
-                return 1;
-            }
-            break;
-        case 2: // Remover quantidade
-            if (valor > 0 && produto_alvo->quantidade >= (int)valor) {
-                produto_alvo->quantidade -= (int)valor;
-                return 1;
-            }
-            break;
-        case 3: // Alterar preço
-            if (valor > 0.0) {
-                produto_alvo->preco = valor;
-                return 1;
-            }
-            break;
-    }
-    return 0; // Falha na operação
-}
-
-// Busca um produto no estoque (apenas lógica, sem printf/scanf)
-int buscar_produto_por_nome(const Produto estoque[], int num_produtos, const char* nome_busca) {
-    for (int i = 0; i < num_produtos; i++) {
-        if (strcmp(estoque[i].nome, nome_busca) == 0) {
-            return i; // Retorna o índice se encontrado
-        }
-    }
-    return -1; // Não encontrado
-}
-
-int aplicar_desconto(Produto *produto_alvo, float porcentagem_desconto) {
-    if (porcentagem_desconto >= 0 && porcentagem_desconto <= 100) {
-        produto_alvo->preco = produto_alvo->preco * (1 - (porcentagem_desconto / 100.0));
-        return 1; // Sucesso
-    }
-    return 0; // Porcentagem inválida
-}
-
-
-// para acessar campos de ums estrutura usa o operador ponto: nome.campo
-// strcmp da biblioteca string.h  determina se duas sequências de caracteres são idênticas ou qual delas vem primeiro em ordem alfabética.
